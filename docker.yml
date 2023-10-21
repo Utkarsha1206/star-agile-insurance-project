@@ -1,0 +1,34 @@
+---
+- name: Pull and Deploy Docker Image from Docker Hub
+  hosts: all
+  become: yes  # Use 'become' to execute commands with sudo privileges
+
+  tasks:
+    - name: updating apt
+      command: sudo apt-get update
+
+    - name: Install Docker
+      command: sudo apt-get install -y docker.io
+      become: yes
+      become_user: root
+
+    - name: Start Docker Service
+      command: sudo systemctl start docker
+      become: yes
+      become_user: root
+
+    - name: Pull Docker Image
+      docker_image:
+        name: utkarshapatil123/insure-me:3.0
+        source: pull
+      become: yes
+
+    - name: Run Docker Container
+      command: docker run -itd -p 8084:8081 utkarshapatil123/insure-me:3.0
+          #name: insure-me
+          #image: utkarshapatil123/insure-me:3.0
+          #state: started
+          #restart_policy: always
+          #ports:
+          # utkarshapatil123/insure-me:3.0- "8080:8080"  # Map host port to container port
+
